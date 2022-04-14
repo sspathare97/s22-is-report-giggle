@@ -54,4 +54,7 @@ We need to write unit tests to make sure the output from 3 and 4 are the same.
 
 ## Blocker (To do for Ryan)
 * Figure out how to store two values in the leaf store  
-# 3. Other fixes made in the GIGGLE repository
+# 3. Other fixes made in the repository
+* Added data files and executable files in the unit tests to gitignore.
+* Fixed the unit tests Makefile issue that prevented two consecutive builds without running make clean- the _Runner.c files were also being considered for tests. Added wildcard filter to ignore them.
+* Fixed minor bugs and formatting.
