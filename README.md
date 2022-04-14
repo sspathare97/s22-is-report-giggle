@@ -7,6 +7,12 @@
 
 # 1.  Compression of the B+ tree leaves
 
+## Motivation
+The large genomic data sets used by GIGGLE occupy a large amount of disk space. Could we use compression algorithms to reduce disk space utilization without significantly affecting the runtime?
+
+## Method/implementation
+We used the most common library for data compression in C- zlib. We created a wrapper/interface around the zlib functions for improved usability. We applied compression to the data stored in the data file. In addition to the existing data, we stored the uncompressed sizes in the index file. We added a file header/marker for both index and data files. The file header includes information about the compression method, compression level, and an extra flag reserved for future use. Files without headers from previous versions are assumed to be uncompressed and are read accordingly, thus enabling backward compatibility. We used function pointers for the compress/uncompress functions, which are set to the compression algorithms depending on the file header. 
+
 ## Results
 
 ### Time taken for Indexing (seconds)
@@ -59,6 +65,9 @@
 |zlib6       |12.20321933    |0.5730424908|12.02490832|5.261854609|6.953686435|11.33335482|14.26628082|
 |zlib9       |12.62452388    |0.5751466442|12.48667264|5.127496946|7.492615961|11.60951164|14.42773764|
 
+**Note**: The time duration values are approximate as they are affected by other applications running in the background.
+## Discussion
+The disk space usage was reduced by 70-72%, but the time taken for the search queries increased by 25-50%. 
 
 # 2.  Compression of the offset index 
 
