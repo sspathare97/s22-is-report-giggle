@@ -11,7 +11,7 @@
 The large genomic data sets used by GIGGLE occupy a large amount of disk space. Could we use compression algorithms to reduce disk space utilization without significantly affecting the runtime?
 
 ## Method/implementation
-We used the most common library for data compression in C- zlib. We created a wrapper/interface around the zlib functions for improved usability. We applied compression to the data stored in the data file. In addition to the existing data, we stored the uncompressed sizes in the index file. We added a file header/marker for both index and data files. The file header includes information about the compression method, compression level, and an extra flag reserved for future use. Files without headers from previous versions are assumed to be uncompressed and are read accordingly, thus enabling backward compatibility. We used function pointers for the compress/uncompress functions, which are set to the compression algorithms depending on the file header. 
+We used the most common library for data compression in C- zlib. We created a wrapper/interface around the zlib functions for improved usability. We applied compression to the data stored in the data file. In addition to the existing data, we stored the uncompressed sizes in the index file. We added a file header/marker for both index and data files. The file header includes information about the compression method, compression level, and an extra flag reserved for future use. Files without headers from previous versions are assumed to be uncompressed and are read accordingly, thus enabling backward compatibility. We used function pointers to dynamically set the compress/uncompress functions, depending on the compression method mentioned in the file header. 
 
 ## Results
 
