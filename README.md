@@ -27,18 +27,21 @@ We used the most common library for data compression in C- zlib. We created a wr
 |zlib6       |122.00174653288|114.55789172|7.40855448 |
 |zlib9       |226.4432716358 |214.986536  |11.37603618|
 
+![](compression-indexing.png)
 
 ## Disk Space Utilization (bytes)
-|type        |space          |
-|------------|---------------|
-|uncompressed|1452596008     |
-|fastlz1     |681222584      |
-|fastlz2     |680601370      |
-|zlib0       |1459414745     |
-|zlib1       |433347471      |
-|zlib3       |428881416      |
-|zlib6       |405332483      |
-|zlib9       |403767540      |
+|type        |space      |
+|------------|-----------|
+|uncompressed|1.452596008|
+|fastlz1     |0.681222584|
+|fastlz2     |0.68060137 |
+|zlib0       |1.459414745|
+|zlib1       |0.433347471|
+|zlib3       |0.428881416|
+|zlib6       |0.405332483|
+|zlib9       |0.40376754 |
+
+![](compression-space.png)
 
 
 ## Time taken for Search 1 (milliseconds)
@@ -53,6 +56,8 @@ We used the most common library for data compression in C- zlib. We created a wr
 |zlib6       |66.19744482    |2.242995965|65.84001782|49.64041217|16.5452913 |63.34766232|74.41526232|
 |zlib9       |67.62356376    |1.623330847|67.41949892|52.68799767|14.9192093 |65.11356992|71.14124392|
 
+![](compression-search1.png)
+
 ## Time taken for Search 2 (milliseconds)
 |command     |mean           |stddev     |median     |user       |system     |min        |max        |
 |------------|---------------|-----------|-----------|-----------|-----------|-----------|-----------|
@@ -65,9 +70,12 @@ We used the most common library for data compression in C- zlib. We created a wr
 |zlib6       |12.20321933    |0.5730424908|12.02490832|5.261854609|6.953686435|11.33335482|14.26628082|
 |zlib9       |12.62452388    |0.5751466442|12.48667264|5.127496946|7.492615961|11.60951164|14.42773764|
 
+![](compression-search2.png)
+
 **Note**: The time duration values are approximate as they are affected by other applications running in the background.
 ## Discussion
 The disk space usage was reduced by 70-72%, but the time taken for the search queries increased by 25-50%. 
+We can conclude that fastlz2 is the best candidate. Compared to the uncompressed version, it reduced the space by around 53%, increased the search times by only 24% and 33% respectively. The indexing time was roughly 2.2 times, which is fine for a one-time task.
 
 # 2.  Compression of the offset index 
 
