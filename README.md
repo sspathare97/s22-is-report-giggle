@@ -29,7 +29,7 @@ We used the most common library for data compression in C- zlib. We created a wr
 
 ![](compression-indexing.png)
 
-## Disk Space Utilization (bytes)
+## Disk Space Utilization (GB)
 |type        |space      |
 |------------|-----------|
 |uncompressed|1.452596008|
