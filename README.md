@@ -77,6 +77,21 @@ We used the most common library for data compression in C- zlib. We created a wr
 The disk space usage was reduced by 70-72%, but the time taken for the search queries increased by 25-50%. 
 We can conclude that fastlz2 is the best candidate. Compared to the uncompressed version, it reduced the space by around 53%, increased the search times by only 24% and 33% respectively. The indexing time was roughly 2.2 times, which is fine for a one-time task.
 
+## Steps to Reproduce
+1. Get the `roadmap_sort.tar.gz` file using `wget https://s3.amazonaws.com/layerlab/giggle/roadmap/roadmap_sort.tar.gz`
+2. Copy the file [GSM1218850_MB135DMMD.peak.q100.bed.gz](https://raw.githubusercontent.com/sspathare97/s22-is-report-giggle/main/GSM1218850_MB135DMMD.peak.q100.bed.gz).
+3. Install [hyperfine](https://github.com/sharkdp/hyperfine), a command-line benchmarking tool.
+4. In the `disk_store.c` file in the GIGGLE repo,
+   1. On line 31, update the `compression_method` (accepted values- `'z'` for zlib or `'f'` for fastlz)
+   2. On line 32, update the `compression_level` (accepted values- `0` to `9` for zlib and `1` or `2` for fastlz)
+5. Build the `giggle` binary using the `make` command in the repository. Make sure the variable `$GIGGLE_ROOT` is set.
+6. Run the following set of commands for each combination of `compression_method` and `compression_level`. For example, here the name is `zlib3` for using zlib with level 3. Replace it with other values.
+   1. `hyperfine '$GIGGLE_ROOT/bin/giggle index -s -f -i "roadmap_sort/*gz" -o zlib3' --export-csv roadmap_sort_comparisons/index/zlib3.csv -M 1`
+   2. `ls -l zlib3/cache* | awk '{s+=$5;}END{print "zlib3,"s;}' >> roadmap_sort_comparisons/space.csv`
+   3. `hyperfine -w 3 '$GIGGLE_ROOT/bin/giggle search -i zlib3 -q GSM1218850_MB135DMMD.peak.q100.bed.gz' --export-csv roadmap_sort_comparisons/search1/zlib3.csv`
+   4. `hyperfine -w 3 '$GIGGLE_ROOT/bin/giggle search -i zlib3 -r 1:1-1000000' --export-csv roadmap_sort_comparisons/search2/zlib3.csv`
+7. Analyze the results in the `roadmap_sort_comparisons` directory.
+
 # 2.  Compression of the offset index 
 
 After compressing the files for leaves, currently, the file that takes up the most space is the offset index file- `offset_index.dat`. It stores a list of a pair of integers `x` and `y` where `x` is the file ID and `y` is the line ID in that file. We need the ability to read a particular position in the compressed file. After exploring various ways to implement compression, we concluded that we should implement block impression. 
