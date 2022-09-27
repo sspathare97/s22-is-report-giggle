@@ -79,18 +79,20 @@ We can conclude that fastlz2 is the best candidate. Compared to the uncompressed
 
 ## Steps to Reproduce
 1. Get the `roadmap_sort.tar.gz` file using `wget https://s3.amazonaws.com/layerlab/giggle/roadmap/roadmap_sort.tar.gz`
-2. Copy the file [GSM1218850_MB135DMMD.peak.q100.bed.gz](https://raw.githubusercontent.com/sspathare97/s22-is-report-giggle/main/GSM1218850_MB135DMMD.peak.q100.bed.gz).
-3. Install [hyperfine](https://github.com/sharkdp/hyperfine), a command-line benchmarking tool.
-4. In the `disk_store.c` file in the GIGGLE repo,
+2. Extract the file using `tar -zxvf roadmap_sort.tar.gz`
+3. Get the `GSM1218850_MB135DMMD.peak.q100.bed.gz` file using `wget https://raw.githubusercontent.com/sspathare97/s22-is-report-giggle/main/GSM1218850_MB135DMMD.peak.q100.bed.gz`
+4. Install [hyperfine](https://github.com/sharkdp/hyperfine), a command-line benchmarking tool.
+5. In the `disk_store.c` file in the GIGGLE repo,
    1. On line 31, update the `compression_method` (accepted values- `'z'` for zlib or `'f'` for fastlz)
    2. On line 32, update the `compression_level` (accepted values- `0` to `9` for zlib and `1` or `2` for fastlz)
-5. Build the `giggle` binary using the `make` command in the repository. Make sure the variable `$GIGGLE_ROOT` is set.
-6. Run the following set of commands for each combination of `compression_method` and `compression_level`. For example, here the name is `zlib3` for using zlib with level 3. Replace it with other values.
+6. Build the `giggle` binary using the `make` command in the repository. Make sure the variable `$GIGGLE_ROOT` is set.
+7. Make the directories `roadmap_sort_comparisons/index`, `roadmap_sort_comparisons/search1`, `roadmap_sort_comparisons/search2`
+8. Run the following set of commands for each combination of `compression_method` and `compression_level`. For example, here the name is `zlib3` for using zlib with level 3. Replace it with other values.
    1. `hyperfine '$GIGGLE_ROOT/bin/giggle index -s -f -i "roadmap_sort/*gz" -o zlib3' --export-csv roadmap_sort_comparisons/index/zlib3.csv -M 1`
    2. `ls -l zlib3/cache* | awk '{s+=$5;}END{print "zlib3,"s;}' >> roadmap_sort_comparisons/space.csv`
    3. `hyperfine -w 3 '$GIGGLE_ROOT/bin/giggle search -i zlib3 -q GSM1218850_MB135DMMD.peak.q100.bed.gz' --export-csv roadmap_sort_comparisons/search1/zlib3.csv`
    4. `hyperfine -w 3 '$GIGGLE_ROOT/bin/giggle search -i zlib3 -r 1:1-1000000' --export-csv roadmap_sort_comparisons/search2/zlib3.csv`
-7. Analyze the results in the `roadmap_sort_comparisons` directory.
+9. Analyze the results in the `roadmap_sort_comparisons` directory.
 
 # 2.  Compression of the offset index 
 
